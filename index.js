@@ -1,20 +1,32 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const { exec } = require('child_process');
-const uuid = require('uuid').v4
+const uuid = require('uuid').v4;
 
 async function recordVideo(url) {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-
-    await page.goto(url, { waitUntil: 'networkidle2' });
-
-    await page.setViewport({ width: 1280, height: 720 });
-
+    
     if (url.includes("linkedin.com")) {
-        await page.mouse.click(10, 10); 
+        // Add a cookie named "li_at" with a provided value
+        await page.setCookie({
+            name: 'li_at',
+            value: 'AQEDATOybg8F9NrxAAABjoa2PYcAAAGOqsLBh00Adbtm9EuyAbv8y68lbQlA-xO5Q55AgBLWiOwonfOMUyAx1O9mDdANFOhD02ym5xBBXFJ9OY-Vs9O-oKwOCVwi8aPBqnMYfRsFDg7ogVtbGP94UPDd',
+            domain: '.www.linkedin.com',
+            path: '/',
+            secure: true,
+            httpOnly: true,
+            sameSite: 'None'
+        });
     }
 
+    console.log("Pass 1");
+    await page.goto(url);
+    
+    console.log("Pass 2");
+    await page.setViewport({ width: 1280, height: 720 });
+    
+    console.log("Started Scroll video generation");
     const bodyHandle = await page.$('body');
     const { height } = await bodyHandle.boundingBox();
     await bodyHandle.dispose();
@@ -69,7 +81,7 @@ function imagesToVideo(frames) {
     });
 }
 
-const url = "https://abc.com/";
+const url = "https://www.linkedin.com/in/santoshthota/";
 if (!url) {
     console.error('Please provide a URL as an argument.');
     process.exit(1);
