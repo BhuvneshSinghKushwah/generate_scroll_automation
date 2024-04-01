@@ -4,7 +4,7 @@ const { exec } = require('child_process');
 const uuid = require('uuid').v4;
 
 async function recordVideo(url) {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     
     if (url.includes("linkedin.com")) {
@@ -21,12 +21,13 @@ async function recordVideo(url) {
     }
 
     console.log("Pass 1");
-    await page.goto(url, {timeout: 5000});
+    await page.goto(url);
+    await new Promise(resolve => setTimeout(resolve, 5000)); 
     const element = await page.waitForSelector('#ember47', { timeout: 5000 });
 
     // Fix two clicks bug
     await element.click();
-    await element.click();
+    // await element.click();
     console.log("Pass 2");
     await page.setViewport({ width: 1280, height: 720 });
     
