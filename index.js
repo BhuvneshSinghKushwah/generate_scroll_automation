@@ -13,7 +13,7 @@ async function recordVideo(url) {
         // Add a cookie named "li_at" with a provided value
         await page.setCookie({
             name: 'li_at',
-            value: 'AQEDATOybg8F9NrxAAABjoa2PYcAAAGOqsLBh00Adbtm9EuyAbv8y68lbQlA-xO5Q55AgBLWiOwonfOMUyAx1O9mDdANFOhD02ym5xBBXFJ9OY-Vs9O-oKwOCVwi8aPBqnMYfRsFDg7ogVtbGP94UPDd',
+            value: 'AQEDATOybg8AQ52qAAABjrNwIvQAAAGO13ym9E4AFVae5N70tNAoBRa-xJsNtX5fAzaOFygtgZRdHyBE3f3jh0k6XSf4VzaO09MBMmvdtDCwCnqXFfiuTw_CSOlF4SPre581YnS4cbcuhxImHwa-2YBo',
             domain: '.www.linkedin.com',
             path: '/',
             secure: true,
@@ -24,54 +24,39 @@ async function recordVideo(url) {
 
     console.log("Pass 1");
     await page.goto(url);
-    await new Promise(resolve => setTimeout(resolve, 3000));
     console.log("Pass 2");
     await page.setViewport({ width: 1280, height: 720 });
 
-    await recorder.start('simple.mp4');
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
-    // console.log("Started Scroll video generation");
-    // const bodyHandle = await page.$('body');
-    // const { height } = await bodyHandle.boundingBox();
-    // await bodyHandle.dispose();
+    // const buttonId = "#ember49";
 
-    // const desiredDuration = 10; // Desired duration of the video in seconds
-    // const frameRate = 5; // Frame rate of the video (frames per second)
-    // const numFrames = desiredDuration * frameRate; // Total number of frames
-
-    // // Calculate the scroll distance for smooth scrolling
-    // const scrollDistance = height / numFrames;
-    // // Calculate the delay between each scroll action
-    // const scrollDelay = 1000 / frameRate;
-    // // Set the duration of the pause in milliseconds
-    // const pauseDuration = 2000;
-    // // Set the number of frames to pause
-    // const pauseIntervalFrames = 10;
-    // // Calculate the total number of pauses
-    // const totalPauses = Math.floor(numFrames / pauseIntervalFrames);
-    // // Calculate the duration of scrolling without pause
-    // const scrollDurationWithoutPause = (numFrames - totalPauses) * scrollDelay;
-
-    // let framesScrolled = 0;
-    // while (framesScrolled < numFrames) {
-    //     // Scroll smoothly
-    //     const framesToScrollWithoutPause = Math.min(numFrames - framesScrolled, pauseIntervalFrames);
-    //     for (let i = 0; i < framesToScrollWithoutPause; i++) {
-    //         await page.evaluate((scrollStep) => {
-    //             window.scrollBy(0, scrollStep);
-    //         }, scrollDistance);
-    //         await new Promise(resolve => setTimeout(resolve, scrollDelay));
-    //         // await page.waitFor(scrollDelay); // Wait for scrollDelay milliseconds
+    // const buttonCoordinates = await page.evaluate((buttonId) => {
+    //     const button = document.getElementById(buttonId);
+    //     if (!button) {
+    //         return null; // Button with provided ID not found
     //     }
+    //     const rect = button.getBoundingClientRect();
+    //     console.log(rect);
+    //     console.log(rect.left + window.scrollX, rect.top + window.scrollY)
+    //     return {
+    //         x: rect.left + window.scrollX,
+    //         y: rect.top + window.scrollY
+    //     };
+    // }, buttonId);
 
-    //     // Pause
-    //     await new Promise(resolve => setTimeout(resolve, pauseDuration));
+    // console.log(buttonCoordinates);
 
-    //     // Update the total frames scrolled
-    //     framesScrolled += framesToScrollWithoutPause;
-    // }
+    await page.mouse.click(1217 + 20, 107.5 + 5);
 
-    // Scroll 1000 pixels
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    console.log('pass 3');
+
+
+    // await new Promise(resolve => setTimeout(resolve, 3000000));
+
+    await recorder.start(`${uuid()}_output.mp4`);
 
     const duration = 1000;
 
@@ -85,40 +70,8 @@ async function recordVideo(url) {
     await recorder.stop();
 
     await browser.close();
-
-    // await imagesToVideo(recording);
 }
 
-
-
-// function imagesToVideo(frames) {
-//     fs.mkdirSync('temp', { recursive: true });
-//     frames.forEach((frame, index) => {
-//         fs.writeFileSync(`temp/image${index}.png`, frame.data, 'base64');
-//     });
-
-//     const command = `ffmpeg -framerate 10 -i temp/image%d.png -vf "fps=10,format=yuv420p" -t 10 ${uuid()}_output.mp4`;
-
-//     exec(command, (error, stdout, stderr) => {
-//         if (error) {
-//             console.error(`ffmpeg error: ${error.message}`);
-//             return;
-//         }
-//         if (stderr) {
-//             console.error(`ffmpeg stderr: ${stderr}`);
-//             return;
-//         }
-//         console.log('Video recording complete!');
-
-//         // Delete all files inside the 'temp' folder
-//         fs.readdirSync('temp').forEach(file => {
-//             fs.unlinkSync(path.join('temp', file));
-//         });
-
-//         // Remove the 'temp' folder itself
-//         fs.rmdirSync('temp');
-//     });
-// }
 
 const url = "https://www.linkedin.com/in/santoshthota/";
 if (!url) {
