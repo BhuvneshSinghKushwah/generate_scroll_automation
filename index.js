@@ -4,21 +4,18 @@ const { exec } = require('child_process');
 const uuid = require('uuid').v4;
 const { PuppeteerScreenRecorder } = require('puppeteer-screen-recorder');
 
-async function linkedin_cookie_valid(browser) {
-    const newPage = await browser.newPage();
+async function linkedin_cookie_valid(page) {
     
-    await newPage.goto('https://www.linkedin.com/my-items/saved-jobs/');
+    await page.goto('https://www.linkedin.com/my-items/saved-jobs/');
     
-    const currentUrl = await newPage.mainFrame().url();
+    const currentUrl = await page.mainFrame().url();
     console.log(currentUrl);
     
     if (currentUrl.includes('login')) {
         console.log('li_at expired');
-        await newPage.close();
         return false;
     } 
-    
-    await newPage.close();
+
     return true;
 }
 
@@ -31,7 +28,7 @@ async function recordVideo(url) {
         // Add a cookie named "li_at" with a provided value
         await page.setCookie({
             name: 'li_at',
-            value: 'AQEDATOybg8AQ52qAAABjrNwIvQAAAGO13ym9EFVae5N70tNAoBRa-xJsNtX5fAzaOFygtgZRdHyBE3f3jh0k6XSf4VzaO09MBMmvdtDCwCnqXFfiuTw_CSOlF4SPre581YnS4cbcuhxImHwa-2YBo',
+            value: 'AQEDATOybg8DvFlCAAABjsb5YR8AAAGO6wXlH1YACBZNrq_txhbKeJpC0HB3Xy9KBuqzqDQyUYM1ZsCZ9AKk1xEJ-29zg2ADG7SPOS3Xrz2y0h9WUqsQFecljgOesJ7G-H3ACW-1UIEDU1p7P4QB9E5R',
             domain: '.www.linkedin.com',
             path: '/',
             secure: true,
@@ -40,7 +37,7 @@ async function recordVideo(url) {
         });
     }
 
-    if(!await linkedin_cookie_valid(browser))
+    if(!await linkedin_cookie_valid(page))
     {
         await browser.close();
         return null;
